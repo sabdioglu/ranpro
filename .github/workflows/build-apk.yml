@@ -1,0 +1,34 @@
+name: Build RANPRO APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodlari Cek
+        uses: actions/checkout@v3
+
+      - name: Flutter Kur
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Flutter Projesi Olustur
+        run: flutter create --project-name ranpro --org com.ranpro.app .
+
+      - name: Bagimliliklari Getir
+        run: flutter pub get
+
+      - name: APK Derle
+        run: flutter build apk --release
+
+      - name: APK Yukle
+        uses: actions/upload-artifact@v3
+        with:
+          name: ranpro-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          
