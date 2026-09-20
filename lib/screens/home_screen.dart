@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'calendar_screen.dart';
+import 'reports_screen.dart';
+import 'settings_screen.dart';
+import 'create_appointment_screen.dart';
 
 // Alt menüyü (Bottom Navigation) tutan ve sayfaları değiştiren Ana İskelet
 class MainScreen extends StatefulWidget {
@@ -9,16 +13,32 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  // Şu an seçili olan sekme (0 = Ana Sayfa, 1 = Takvim, 2 = Raporlar, 3 = Ayarlar)
   int _selectedIndex = 0;
+
+  // Alt menüdeki butonlara bastığımızda açılacak olan SAYFALARIN LİSTESİ
+  final List<Widget> _pages = [
+    const HomeScreenBody(), // 0. İndeks: Ana Sayfa
+    const CalendarScreen(), // 1. İndeks: Takvim
+    const ReportsScreen(),  // 2. İndeks: Raporlar
+    const SettingsScreen(), // 3. İndeks: Ayarlar
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const HomeScreenBody(),
+      // Ekranda _pages listesindeki seçili olan sayfayı göster
+      body: _pages[_selectedIndex],
       
       // Ortada dışarı taşan Turuncu Ekle Butonu
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        // Bu butona basılınca 'Randevu Oluştur' sayfasını aç
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateAppointmentScreen()),
+          );
+        },
         backgroundColor: const Color(0xFFFF5722),
         foregroundColor: Colors.white,
         elevation: 4,
@@ -55,6 +75,7 @@ class _MainScreenState extends State<MainScreen> {
     final color = isSelected ? const Color(0xFFFF5722) : Colors.grey;
     return InkWell(
       onTap: () {
+        // Alt menüdeki butonlardan birine basıldığında indexi güncelle ve ekranı değiştir
         setState(() {
           _selectedIndex = index;
         });
@@ -71,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-// ==================== ANA SAYFA İÇERİĞİ ====================
+// ==================== ANA SAYFA İÇERİĞİ (Görseldeki Tasarım) ====================
 class HomeScreenBody extends StatelessWidget {
   const HomeScreenBody({Key? key}) : super(key: key);
 
@@ -233,3 +254,4 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 }
+
