@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// Yeni oluşturduğunuz dosyayı uygulamaya tanıtıyoruz
 import 'screens/home_screen.dart';
 
 void main() {
@@ -16,10 +15,11 @@ class RanProApp extends StatelessWidget {
       title: 'RanPro',
       theme: ThemeData(
         useMaterial3: true,
+        primaryColor: const Color(0xFFFF5722),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFF5722)),
+        scaffoldBackgroundColor: const Color(0xFFF8F9FA), // Çok açık gri arkaplan
       ),
-      // Uygulama açıldığında direkt oluşturduğunuz Ana Sayfaya (HomeScreen) gidecek
-      home: const HomeScreen(), 
+      home: const MainScreen(),
     );
   }
 }
