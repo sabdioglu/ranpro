@@ -4,35 +4,30 @@ import 'reports_screen.dart';
 import 'settings_screen.dart';
 import 'create_appointment_screen.dart';
 
-// Alt menüyü (Bottom Navigation) tutan ve sayfaları değiştiren Ana İskelet
-class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  // Şu an seçili olan sekme (0 = Ana Sayfa, 1 = Takvim, 2 = Raporlar, 3 = Ayarlar)
+class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  // Alt menüdeki butonlara bastığımızda açılacak olan SAYFALARIN LİSTESİ
+  // Alt menüye basıldığında açılacak sayfalar
   final List<Widget> _pages = [
-    const HomeScreenBody(), // 0. İndeks: Ana Sayfa
-    const CalendarScreen(), // 1. İndeks: Takvim
-    const ReportsScreen(),  // 2. İndeks: Raporlar
-    const SettingsScreen(), // 3. İndeks: Ayarlar
+    const HomeScreenBody(),
+    const CalendarScreen(),
+    const ReportsScreen(),
+    const SettingsScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Ekranda _pages listesindeki seçili olan sayfayı göster
       body: _pages[_selectedIndex],
       
-      // Ortada dışarı taşan Turuncu Ekle Butonu
       floatingActionButton: FloatingActionButton(
-        // Bu butona basılınca 'Randevu Oluştur' sayfasını aç
         onPressed: () {
           Navigator.push(
             context,
@@ -47,7 +42,6 @@ class _MainScreenState extends State<MainScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       
-      // Alt Menü
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
@@ -60,7 +54,7 @@ class _MainScreenState extends State<MainScreen> {
             children: <Widget>[
               _buildBottomNavItem(icon: Icons.home, label: 'Ana Sayfa', index: 0),
               _buildBottomNavItem(icon: Icons.calendar_month, label: 'Takvim', index: 1),
-              const SizedBox(width: 48), // Ortadaki '+' butonu için boşluk
+              const SizedBox(width: 48), 
               _buildBottomNavItem(icon: Icons.bar_chart, label: 'Raporlar', index: 2),
               _buildBottomNavItem(icon: Icons.settings, label: 'Ayarlar', index: 3),
             ],
@@ -75,7 +69,6 @@ class _MainScreenState extends State<MainScreen> {
     final color = isSelected ? const Color(0xFFFF5722) : Colors.grey;
     return InkWell(
       onTap: () {
-        // Alt menüdeki butonlardan birine basıldığında indexi güncelle ve ekranı değiştir
         setState(() {
           _selectedIndex = index;
         });
@@ -92,7 +85,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-// ==================== ANA SAYFA İÇERİĞİ (Görseldeki Tasarım) ====================
+// ==================== ANA SAYFA TASARIMI ====================
 class HomeScreenBody extends StatelessWidget {
   const HomeScreenBody({Key? key}) : super(key: key);
 
@@ -105,7 +98,6 @@ class HomeScreenBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Üst Bar (Logo, İşletme Adı)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -254,4 +246,3 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 }
-
