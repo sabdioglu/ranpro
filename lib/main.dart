@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+// Yeni oluşturduğunuz dosyayı uygulamaya tanıtıyoruz
+import 'screens/home_screen.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
   runApp(const RanProApp());
 }
 
@@ -11,35 +12,14 @@ class RanProApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'RanPro',
       debugShowCheckedModeBanner: false,
+      title: 'RanPro',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFFF5722), // RanPro Turuncusu
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFF5722)),
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.calendar_month, size: 80, color: Color(0xFFFF5722)),
-              SizedBox(height: 20),
-              Text(
-                'RANPRO\nProfesyonel Randevu ve İşletme Yönetimi',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
-              Text(
-                'STAGE 1: Başarıyla Kuruldu!',
-                style: TextStyle(fontSize: 16, color: Colors.green),
-              ),
-            ],
-          ),
-        ),
-      ),
+      // Uygulama açıldığında direkt oluşturduğunuz Ana Sayfaya (HomeScreen) gidecek
+      home: const HomeScreen(), 
     );
   }
 }
