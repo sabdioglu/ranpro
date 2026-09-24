@@ -8,8 +8,8 @@ class CreateAppointmentScreen extends StatefulWidget {
 }
 
 class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
-  // Müşteri / Misafir sekmesi seçimi (true = Müşteri, false = Misafir)
-  bool _isCustomerSelected = true;
+  // Müşteri ve Misafir sekmeleri arasında geçiş yapmak için kullanacağımız durum
+  bool isMisafirSelected = true; 
 
   @override
   Widget build(BuildContext context) {
@@ -18,189 +18,155 @@ class _CreateAppointmentScreenState extends State<CreateAppointmentScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        // SOL ÜSTTEKİ GERİ BUTONUNU ÇALIŞTIRAN KOD
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
-          onPressed: () {},
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context); // Önceki sayfaya (Ana Sayfaya) dön
+          },
         ),
-        title: const Text('Randevu Oluştur', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+        title: const Text('Randevu Oluştur', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
+        centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Müşteri / Misafir Geçiş Sekmeleri
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => setState(() => _isCustomerSelected = true),
-                            child: Container(
-                              margin: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: _isCustomerSelected ? Colors.white : Colors.transparent,
-                                borderRadius: BorderRadius.circular(21),
-                                boxShadow: _isCustomerSelected
-                                    ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)]
-                                    : [],
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Müşteri',
-                                style: TextStyle(
-                                  fontWeight: _isCustomerSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: _isCustomerSelected ? Colors.black87 : Colors.grey[600],
-                                ),
-                              ),
-                            ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // MÜŞTERİ / MİSAFİR GEÇİŞ BUTONLARI (Artık Tıklanabilir)
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() { isMisafirSelected = false; });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: !isMisafirSelected ? Colors.white : Colors.transparent,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: !isMisafirSelected ? [const BoxShadow(color: Colors.black12, blurRadius: 4)] : [],
                           ),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => setState(() => _isCustomerSelected = false),
-                            child: Container(
-                              margin: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: !_isCustomerSelected ? Colors.white : Colors.transparent,
-                                borderRadius: BorderRadius.circular(21),
-                                boxShadow: !_isCustomerSelected
-                                    ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)]
-                                    : [],
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Misafir',
-                                style: TextStyle(
-                                  fontWeight: !_isCustomerSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: !_isCustomerSelected ? Colors.black87 : Colors.grey[600],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Seçim Alanları (Liste Görünümü)
-                  _buildSelectionRow(Icons.person_outline, 'Müşteri seçin'),
-                  _buildSelectionRow(Icons.spa_outlined, 'Hizmet seçin'),
-                  _buildSelectionRow(Icons.badge_outlined, 'Personel seçin'),
-                  
-                  // Tarih Seçimi
-                  _buildSelectionRow(Icons.calendar_today_outlined, '18 Eylül 2026', isDate: true),
-                  
-                  // Saat Seçimi
-                  _buildSelectionRow(Icons.access_time, '10:30', isDate: true),
-                  
-                  const SizedBox(height: 16),
-
-                  // Not Ekleme Alanı
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: Icon(Icons.note_alt_outlined, color: Colors.grey[500]),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextField(
-                          maxLines: 3,
-                          decoration: InputDecoration(
-                            hintText: 'Not ekleyin...',
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Colors.grey[200]!),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Colors.grey[200]!),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: Color(0xFFFF5722)),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[50],
+                          child: Center(
+                            child: Text('Müşteri', style: TextStyle(fontWeight: !isMisafirSelected ? FontWeight.bold : FontWeight.normal, color: !isMisafirSelected ? Colors.black : Colors.grey)),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
-                ],
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() { isMisafirSelected = true; });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: isMisafirSelected ? Colors.white : Colors.transparent,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: isMisafirSelected ? [const BoxShadow(color: Colors.black12, blurRadius: 4)] : [],
+                          ),
+                          child: Center(
+                            child: Text('Misafir', style: TextStyle(fontWeight: isMisafirSelected ? FontWeight.bold : FontWeight.normal, color: isMisafirSelected ? Colors.black : Colors.grey)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
+              const SizedBox(height: 24),
 
-          // Alt Kısım: Randevu Oluştur Butonu
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -4))
-              ],
-            ),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF5722),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                elevation: 0,
+              // TIKLANABİLİR SEÇİM LİSTELERİ
+              _buildInteractiveRow(Icons.person_outline, 'Müşteri seçin'),
+              const Divider(),
+              _buildInteractiveRow(Icons.spa_outlined, 'Hizmet seçin'),
+              const Divider(),
+              _buildInteractiveRow(Icons.badge_outlined, 'Personel seçin'),
+              const Divider(),
+              _buildInteractiveRow(Icons.calendar_today_outlined, '18 Eylül 2026'),
+              const Divider(),
+              _buildInteractiveRow(Icons.access_time, '10:30'),
+              const Divider(),
+              
+              const SizedBox(height: 24),
+              
+              // NOT EKLEME ALANI (Artık içine yazı yazılabilir)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                child: const TextField(
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.edit_note, color: Colors.grey),
+                    border: InputBorder.none,
+                    hintText: 'Not ekleyin...',
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                ),
               ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Randevu Oluştur', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
-                ],
-              ),
-            ),
+              const SizedBox(height: 40),
+            ],
           ),
-        ],
+        ),
+      ),
+      
+      // EN ALTTAKİ RANDEVU OLUŞTUR BUTONU (Artık Çalışıyor)
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              // Butona basıldığında yeşil bir bildirim çıkar ve Ana Sayfaya döner
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Randevu başarıyla oluşturuldu!'), 
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF5722),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              elevation: 2,
+            ),
+            child: const Text('Randevu Oluştur', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+          ),
+        ),
       ),
     );
   }
 
-  // Tıklanabilir Seçim Satırı Tasarımı
-  Widget _buildSelectionRow(IconData icon, String title, {bool isDate = false}) {
+  // Satırların tıklanabilir olmasını sağlayan fonksiyon
+  Widget _buildInteractiveRow(IconData icon, String text) {
     return InkWell(
-      onTap: () {},
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey[100]!)),
-        ),
+      onTap: () {
+        // İleride buraya açılır pencereler (Dropdown) eklenecek
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$text menüsü açılacak...'), duration: const Duration(seconds: 1)),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
         child: Row(
           children: [
-            Icon(icon, color: Colors.grey[500], size: 24),
+            Icon(icon, color: Colors.grey, size: 22),
             const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: isDate ? Colors.black87 : Colors.grey[600],
-                  fontWeight: isDate ? FontWeight.w500 : FontWeight.normal,
-                ),
-              ),
-            ),
-            Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+            Expanded(child: Text(text, style: const TextStyle(color: Colors.black87, fontSize: 15))),
+            const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
           ],
         ),
       ),
