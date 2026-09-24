@@ -3,6 +3,10 @@ import 'calendar_screen.dart';
 import 'reports_screen.dart';
 import 'settings_screen.dart';
 import 'create_appointment_screen.dart';
+// Yeni eklenen bağlantı sayfaları
+import 'add_customer_screen.dart';
+import 'finance_screen.dart';
+import 'web_appointment_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  // Alt menüye basıldığında açılacak sayfalar
   final List<Widget> _pages = [
     const HomeScreenBody(),
     const CalendarScreen(),
@@ -141,6 +144,7 @@ class HomeScreenBody extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
+              // ORTADAKİ BUTONLAR BURADA SAYFALARA BAĞLANIYOR
               GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -149,12 +153,12 @@ class HomeScreenBody extends StatelessWidget {
                 crossAxisSpacing: 8,
                 childAspectRatio: 0.8,
                 children: [
-                  _buildActionIcon(Icons.add_circle, 'Yeni Randevu', Colors.teal),
-                  _buildActionIcon(Icons.person_add, 'Müşteri Ekle', Colors.teal),
-                  _buildActionIcon(Icons.shopping_bag, 'Hızlı Satış', Colors.teal),
-                  _buildActionIcon(Icons.attach_money, 'Gelir Ekle', Colors.green),
-                  _buildActionIcon(Icons.money_off, 'Gider Ekle', Colors.red),
-                  _buildActionIcon(Icons.language, 'Web Linki', Colors.blue),
+                  _buildActionIcon(context, Icons.add_circle, 'Yeni Randevu', Colors.teal, const CreateAppointmentScreen()),
+                  _buildActionIcon(context, Icons.person_add, 'Müşteri Ekle', Colors.teal, const AddCustomerScreen()),
+                  _buildActionIcon(context, Icons.shopping_bag, 'Hızlı Satış', Colors.teal, null), // Özel sayfası yoksa bildirim verir
+                  _buildActionIcon(context, Icons.attach_money, 'Gelir Ekle', Colors.green, const FinanceScreen()),
+                  _buildActionIcon(context, Icons.money_off, 'Gider Ekle', Colors.red, const FinanceScreen()),
+                  _buildActionIcon(context, Icons.language, 'Web Linki', Colors.blue, const WebAppointmentScreen()),
                 ],
               ),
               const SizedBox(height: 32),
@@ -198,22 +202,38 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 
-  Widget _buildActionIcon(IconData icon, String label, Color iconColor) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8)],
-            border: Border.all(color: Colors.grey.shade100),
+  // TIKLANABİLİR BUTON YARATAN YENİ FONKSİYON
+  Widget _buildActionIcon(BuildContext context, IconData icon, String label, Color iconColor, Widget? targetScreen) {
+    return InkWell(
+      onTap: () {
+        if (targetScreen != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => targetScreen),
+          );
+        } else {
+          // Hızlı Satış gibi henüz sayfası olmayan butonlar için uyarı
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$label ekranı yakında eklenecek!')),
+          );
+        }
+      },
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8)],
+              border: Border.all(color: Colors.grey.shade100),
+            ),
+            child: Icon(icon, color: iconColor, size: 28),
           ),
-          child: Icon(icon, color: iconColor, size: 28),
-        ),
-        const SizedBox(height: 8),
-        Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
-      ],
+          const SizedBox(height: 8),
+          Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+        ],
+      ),
     );
   }
 
