@@ -34,11 +34,10 @@
 - `id` (String, Document ID)
 - `businessId` (String)
 - `name` (String)
-- `order` (Number/Integer: Sıralama için)
+- `order` (Number/Integer)
 - `isActive` (Boolean)
 
 ### 5. staff
-İşletmede çalışan personellerin profil ve temel yapılandırma bilgileri.
 - `id` (String, Document ID)
 - `businessId` (String)
 - `firstName` (String)
@@ -46,7 +45,21 @@
 - `photoUrl` (String, nullable)
 - `phone` (String, nullable)
 - `email` (String, nullable)
-- `position` (String, nullable) // Örn: Kıdemli Stilist, Terapist
-- `serviceIds` (Array of Strings) // Personelin verebildiği hizmetlerin ID'leri
+- `position` (String, nullable)
+- `serviceIds` (Array of Strings)
 - `isActive` (Boolean)
-// Çalışma saatleri ve komisyon oranları ayrı özelliklerde veya alt koleksiyonlarda yönetilecektir.
+
+### 6. customers
+İşletmenin müşteri kayıtları.
+- `id` (String, Document ID)
+- `businessId` (String)
+- `firstName` (String)
+- `lastName` (String)
+- `phone` (String)
+- `email` (String, nullable)
+- `notes` (String, nullable)
+- `totalVisits` (Number/Integer)
+- `totalSpent` (Number/Integer: Kuruş cinsinden)
+- `createdAt` (Timestamp)
+- `lastVisitAt` (Timestamp, nullable)
+- `isActive` (Boolean)
