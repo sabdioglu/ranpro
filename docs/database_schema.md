@@ -3,17 +3,15 @@
 ## Collections
 
 ### 1. users
-Kullanıcı kimlik, rol ve tenant (işletme) eşleştirmesini tutar.
 - `uid` (String, Document ID)
 - `email` (String)
 - `displayName` (String)
-- `role` (String: 'super_admin', 'admin', 'business_owner', 'staff', 'customer')
-- `businessId` (String, nullable: Eğer kullanıcı bir işletmeye bağlıysa)
+- `role` (String)
+- `businessId` (String, nullable)
 - `createdAt` (Timestamp)
 - `isActive` (Boolean)
 
 ### 2. businesses
-İşletme temel profili.
 - `businessId` (String, Document ID)
 - `name` (String)
 - `logoUrl` (String, nullable)
@@ -23,11 +21,19 @@ Kullanıcı kimlik, rol ve tenant (işletme) eşleştirmesini tutar.
 - `isActive` (Boolean)
 
 ### 3. services
-İşletmenin sunduğu hizmetler. Multi-tenant güvenlik gereği her hizmet bir işletmeye aittir.
 - `id` (String, Document ID)
 - `businessId` (String)
 - `name` (String)
 - `description` (String, nullable)
 - `durationInMinutes` (Number/Integer)
-- `price` (Number/Integer: Kuruş cinsinden. Örn: 100 TL = 10000)
+- `price` (Number/Integer: Kuruş cinsinden)
+- `isActive` (Boolean)
+- `groupId` (String, nullable)
+
+### 4. serviceGroups
+İşletmenin hizmetlerini kategorize etmek için kullanılır (Örn: Lazer, Cilt Bakımı, Masaj).
+- `id` (String, Document ID)
+- `businessId` (String)
+- `name` (String)
+- `order` (Number/Integer: Sıralama için)
 - `isActive` (Boolean)
