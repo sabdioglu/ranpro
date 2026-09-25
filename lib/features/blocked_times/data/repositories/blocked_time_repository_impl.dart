@@ -8,19 +8,30 @@ class BlockedTimeRepositoryImpl implements BlockedTimeRepository {
   BlockedTimeRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<List<BlockedTimeEntity>> getBlockedTimes(String businessId, {String? staffId, DateTime? startDate, DateTime? endDate}) async {
+  Future<List<BlockedTimeEntity>> getBlockedTimes(
+    String businessId, {
+    String? staffId,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
     final result = await _remoteDataSource.getBlockedTimes(
       businessId, 
       staffId: staffId, 
       startDate: startDate, 
       endDate: endDate,
     );
+    
     return result.map((data) => BlockedTimeEntity.fromJson(data, data['id'] as String)).toList();
   }
 
   @override
   Future<void> addBlockedTime(BlockedTimeEntity blockedTime) async {
     await _remoteDataSource.addBlockedTime(blockedTime.toJson());
+  }
+
+  @override
+  Future<void> updateBlockedTime(BlockedTimeEntity blockedTime) async {
+    await _remoteDataSource.updateBlockedTime(blockedTime.id, blockedTime.toJson());
   }
 
   @override
