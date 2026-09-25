@@ -1,16 +1,18 @@
 # Development Progress
 
-## STAGE 0 - 9
-- [x] Temel mimari, Auth, Business, Services, Service Groups (Data + UI) tamamlandı.
-
-## STAGE 10
-- [x] Personel (Staff) Domain/Data katmanları oluşturuldu.
-- [x] Personel Listeleme Ekranı (staff_screen) tamamlandı.
-- [x] Personel Ekle/Düzenle Ekranı (add_edit_staff_screen) eklendi.
-- [x] Personel Formunda 'servicesProvider' üzerinden hizmet seçme (FilterChip) entegrasyonu sağlandı.
+## STAGE 0 - 10
+- [x] Temel mimari, Auth, Business, Services, Service Groups, Staff (Data + UI) tamamlandı.
 
 ## STAGE 11
-- [x] Müşteriler (Customers) Firestore koleksiyonu şemaya eklendi.
-- [x] Müşteri Entity, Repository, DataSource katmanları Clean Architecture ile oluşturuldu.
-- [x] Müşteri listesini dinleyen Riverpod Provider'ları eklendi.
-- [ ] Müşteri UI (Liste, Ekle/Düzenle, Detay Ekranları) eklenecek.
+- [x] Müşteriler (Customers) Domain/Data altyapısı oluşturuldu.
+- [x] Müşteriler View Model (customers_view_model.dart) oluşturuldu.
+- [x] Müşteri Liste Ekranı (customers_screen.dart) oluşturuldu. Toplam harcama kuruş formatından double formata çevrilerek gösterildi.
+- [x] Müşteri Ekle/Düzenle Ekranı (add_edit_customer_screen.dart) oluşturuldu.
+- [ ] Detaylı Müşteri Geçmişi (Randevular oluştuktan sonra eklenecek).
+
+## STAGE 12
+- [x] Çalışma Saatleri (Working Hours) Firestore koleksiyonu şemaya eklendi. (İşletme ve Personel kırılımı ayrıldı).
+- [x] Çalışma Saatleri Entity, Repository, DataSource oluşturuldu.
+- [x] Firestore `WriteBatch` kullanılarak toplu çalışma saati kaydetme (batchUpdate) işlemi entegre edildi.
+- [x] Çalışma Saatleri Riverpod Provider'ları (business & staff ayrımıyla) bağlandı.
+- [ ] Çalışma Saatleri UI (Ayarlar/Personel içinden düzenleme ekranları) eklenecek.
