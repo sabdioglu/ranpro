@@ -6,11 +6,11 @@
 (Önceki aşamalarda tanımlandı ve uygulandı.)
 
 ### 8. blockedTimes
-İşletmenin veya personelin randevu alamayacağı özel tarihler, izinler, molalar veya kapalı günler.
+Müsaitliği kapatan istisnai durumları tutar (Öğle molası, personel izni, tadilat, resmi tatil vb.)
 - `id` (String, Document ID)
 - `businessId` (String)
-- `staffId` (String, nullable) // İşletme geneli kapalıysa null.
-- `startTime` (Timestamp)
-- `endTime` (Timestamp)
-- `reason` (String, nullable) // Örn: "Öğle Molası", "Yıllık İzin", "Tadilat"
-- `isActive` (Boolean)
+- `staffId` (String, nullable) // Sadece belli bir personelin izni/molası ise dolu. Tüm işletme kapalıysa null.
+- `title` (String) // "Öğle Molası", "Yıllık İzin", "Tadilat"
+- `startDateTime` (String, ISO8601) // Başlangıç tarih ve saati
+- `endDateTime` (String, ISO8601) // Bitiş tarih ve saati
+- `isAllDay` (Boolean) // Tüm gün mü?
