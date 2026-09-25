@@ -1,20 +1,20 @@
 class BlockedTimeEntity {
   final String id;
   final String businessId;
-  final String? staffId;
-  final DateTime startTime;
-  final DateTime endTime;
-  final String? reason;
-  final bool isActive;
+  final String? staffId; // null ise tüm işletme kapalıdır
+  final String title;
+  final DateTime startDateTime;
+  final DateTime endDateTime;
+  final bool isAllDay;
 
   const BlockedTimeEntity({
     required this.id,
     required this.businessId,
     this.staffId,
-    required this.startTime,
-    required this.endTime,
-    this.reason,
-    this.isActive = true,
+    required this.title,
+    required this.startDateTime,
+    required this.endDateTime,
+    this.isAllDay = false,
   });
 
   factory BlockedTimeEntity.fromJson(Map<String, dynamic> json, String id) {
@@ -22,10 +22,14 @@ class BlockedTimeEntity {
       id: id,
       businessId: json['businessId'] as String? ?? '',
       staffId: json['staffId'] as String?,
-      startTime: DateTime.parse(json['startTime'].toString()),
-      endTime: DateTime.parse(json['endTime'].toString()),
-      reason: json['reason'] as String?,
-      isActive: json['isActive'] as bool? ?? true,
+      title: json['title'] as String? ?? '',
+      startDateTime: json['startDateTime'] != null 
+          ? DateTime.parse(json['startDateTime'].toString()) 
+          : DateTime.now(),
+      endDateTime: json['endDateTime'] != null 
+          ? DateTime.parse(json['endDateTime'].toString()) 
+          : DateTime.now().add(const Duration(hours: 1)),
+      isAllDay: json['isAllDay'] as bool? ?? false,
     );
   }
 
@@ -33,10 +37,10 @@ class BlockedTimeEntity {
     return {
       'businessId': businessId,
       'staffId': staffId,
-      'startTime': startTime.toUtc().toIso8601String(),
-      'endTime': endTime.toUtc().toIso8601String(),
-      'reason': reason,
-      'isActive': isActive,
+      'title': title,
+      'startDateTime': startDateTime.toIso8601String(),
+      'endDateTime': endDateTime.toIso8601String(),
+      'isAllDay': isAllDay,
     };
   }
 }
