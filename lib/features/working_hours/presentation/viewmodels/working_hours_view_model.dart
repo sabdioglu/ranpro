@@ -38,6 +38,7 @@ class WorkingHoursViewModel extends StateNotifier<WorkingHoursState> {
       final repository = _ref.read(workingHoursRepositoryProvider);
       await repository.batchUpdateWorkingHours(workingHours);
       
+      // İlgili listeyi yenile
       if (staffId == null) {
         _ref.invalidate(businessWorkingHoursProvider);
       } else {
