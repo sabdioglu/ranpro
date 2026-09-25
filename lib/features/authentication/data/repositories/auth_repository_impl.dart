@@ -1,50 +1,59 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../domain/entities/app_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../datasources/user_remote_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthRemoteDataSource _remoteDataSource;
+  final AuthRemoteDataSource _authRemoteDataSource;
+  final UserRemoteDataSource _userRemoteDataSource;
 
-  AuthRepositoryImpl(this._remoteDataSource);
+  AuthRepositoryImpl(
+    this._authRemoteDataSource,
+    this._userRemoteDataSource,
+  );
 
-  AppUser? _mapFirebaseUser(User? user) {
+  Future<AppUser?> _mapFirebaseUser(User? user) async {
     if (user == null) return null;
+
+    final userData = await _userRemoteDataSource.getUserData(user.uid);
     
-    // Not: Gerçek rol ve businessId Firestore'dan (users collection) çekilecektir.
-    // Bu aşamada JWT token (custom claims) veya varsayılan değer atanır.
     return AppUser(
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
-      role: 'staff', // TODO: Firestore'dan rol çekilecek
-      businessId: null, // TODO: Firestore'dan businessId çekilecek
+      role: userData?['role'] ?? 'customer',
+      businessId: userData?['businessId'],
     );
   }
 
   @override
   Stream<AppUser?> get authStateChanges {
-    return _remoteDataSource.authStateChanges.map(_mapFirebaseUser);
+    // FirebaseAuth state değişimlerini dinler ve Firestore verisiyle birleştirir
+    return _authRemoteDataSource.authStateChanges.asyncMap((user) async {
+      return await _mapFirebaseUser(user);
+    });
   }
 
   @override
   Future<AppUser?> getCurrentUser() async {
-    final user = _remoteDataSource.currentUser;
-    return _mapFirebaseUser(user);
+    final user = _authRemoteDataSource.currentUser;
+    return await _mapFirebaseUser(user);
   }
 
   @override
   Future<void> signInWithEmailAndPassword(String email, String password) async {
-    await _remoteDataSource.signInWithEmailAndPassword(email, password);
+    await _authRemoteDataSource.signInWithEmailAndPassword(email, password);
   }
 
   @override
   Future<void> signOut() async {
-    await _remoteDataSource.signOut();
+    await _authRemoteDataSource.signOut();
   }
 
   @override
   Future<void> sendPasswordResetEmail(String email) async {
-    await _remoteDataSource.sendPasswordResetEmail(email);
+    await _authRemoteDataSource.sendPasswordResetEmail(email);
   }
 }
