@@ -2,15 +2,19 @@
 
 ## Collections
 
-### 1-7. users, businesses, services, serviceGroups, staff, customers, workingHours
+### 1-8. users, businesses, services, serviceGroups, staff, customers, workingHours, blockedTimes
 (Önceki aşamalarda tanımlandı ve uygulandı.)
 
-### 8. blockedTimes
-Müsaitliği kapatan istisnai durumları tutar (Öğle molası, personel izni, tadilat, resmi tatil vb.)
+### 9. appointments
+İşletmenin randevu kayıtları.
 - `id` (String, Document ID)
 - `businessId` (String)
-- `staffId` (String, nullable) // Sadece belli bir personelin izni/molası ise dolu. Tüm işletme kapalıysa null.
-- `title` (String) // "Öğle Molası", "Yıllık İzin", "Tadilat"
-- `startDateTime` (String, ISO8601) // Başlangıç tarih ve saati
-- `endDateTime` (String, ISO8601) // Bitiş tarih ve saati
-- `isAllDay` (Boolean) // Tüm gün mü?
+- `staffId` (String)
+- `customerId` (String)
+- `serviceId` (String)
+- `startDateTime` (String, ISO8601)
+- `endDateTime` (String, ISO8601)
+- `status` (String: 'pending', 'confirmed', 'cancelled', 'completed')
+- `notes` (String, nullable)
+- `price` (Number/Integer: Kuruş cinsinden, hizmetin o anki fiyatı kopyalanır)
+- `createdAt` (Timestamp)
