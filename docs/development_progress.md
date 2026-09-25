@@ -1,18 +1,15 @@
 # Development Progress
 
-## STAGE 0 - 10
-- [x] Temel mimari, Auth, Business, Services, Service Groups, Staff (Data + UI) tamamlandı.
-
-## STAGE 11
-- [x] Müşteriler (Customers) Domain/Data altyapısı oluşturuldu.
-- [x] Müşteriler View Model (customers_view_model.dart) oluşturuldu.
-- [x] Müşteri Liste Ekranı (customers_screen.dart) oluşturuldu. Toplam harcama kuruş formatından double formata çevrilerek gösterildi.
-- [x] Müşteri Ekle/Düzenle Ekranı (add_edit_customer_screen.dart) oluşturuldu.
-- [ ] Detaylı Müşteri Geçmişi (Randevular oluştuktan sonra eklenecek).
+## STAGE 0 - 11
+- [x] Temel mimari, Auth, Business, Services, Staff, Customers modülleri tamamlandı.
 
 ## STAGE 12
-- [x] Çalışma Saatleri (Working Hours) Firestore koleksiyonu şemaya eklendi. (İşletme ve Personel kırılımı ayrıldı).
-- [x] Çalışma Saatleri Entity, Repository, DataSource oluşturuldu.
-- [x] Firestore `WriteBatch` kullanılarak toplu çalışma saati kaydetme (batchUpdate) işlemi entegre edildi.
-- [x] Çalışma Saatleri Riverpod Provider'ları (business & staff ayrımıyla) bağlandı.
-- [ ] Çalışma Saatleri UI (Ayarlar/Personel içinden düzenleme ekranları) eklenecek.
+- [x] Çalışma Saatleri (Working Hours) Altyapısı oluşturuldu.
+- [x] Çalışma Saatleri ViewModel'i (batch kaydetme özelliği ile) oluşturuldu.
+- [x] Çalışma Saatleri UI ekranı (working_hours_screen.dart) geliştirildi. 7 günlük gösterim, zaman seçici (TimePicker) ve Switch (Açık/Kapalı) entegrasyonu tamamlandı.
+
+## STAGE 13
+- [x] Bloklu Zamanlar (Blocked Times) Firestore koleksiyonu şemaya eklendi.
+- [x] Bloklu Zamanlar Entity (DateTime dönüşümleri ile), Repository, DataSource katmanları oluşturuldu.
+- [x] Bloklu Zamanlar Riverpod Provider altyapısı bağlandı.
+- [ ] Bloklu Zamanlar UI ve Takvim Entegrasyonu (STAGE 14) sırasında kullanılmak üzere hazır bekletiliyor.
