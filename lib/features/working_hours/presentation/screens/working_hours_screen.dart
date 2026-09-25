@@ -8,50 +8,59 @@ import '../providers/working_hours_providers.dart';
 import '../viewmodels/working_hours_view_model.dart';
 
 class WorkingHoursScreen extends ConsumerStatefulWidget {
-  final String? staffId; // Eğer null ise işletme çalışma saati, değilse personel.
+  final String? staffId; // null ise İşletme çalışma saatleri düzenlenir
+  final String? staffName; // Başlıkta göstermek için
 
-  const WorkingHoursScreen({super.key, this.staffId});
+  const WorkingHoursScreen({super.key, this.staffId, this.staffName});
 
   @override
   ConsumerState<WorkingHoursScreen> createState() => _WorkingHoursScreenState();
 }
 
 class _WorkingHoursScreenState extends ConsumerState<WorkingHoursScreen> {
-  List<WorkingHoursEntity>? _editableHours;
+  List<WorkingHoursEntity> _currentHours = [];
+  bool _isInitialized = false;
 
-  final List<String> _dayNames = [
+  final List<String> _days = [
     'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'
   ];
 
-  void _initializeHours(List<WorkingHoursEntity> data, String businessId) {
-    if (_editableHours != null) return;
+  void _initHours(List<WorkingHoursEntity> fetchedHours, String businessId) {
+    if (_isInitialized) return;
     
-    _editableHours = List.generate(7, (index) {
-      final dayOfWeek = index + 1;
-      final existing = data.where((e) => e.dayOfWeek == dayOfWeek).toList();
-      
+    List<WorkingHoursEntity> tempList = [];
+    for (int i = 1; i <= 7; i++) {
+      // O güne ait kayıt var mı bul, yoksa default (09:00 - 18:00) oluştur
+      final existing = fetchedHours.where((e) => e.dayOfWeek == i).toList();
       if (existing.isNotEmpty) {
-        return existing.first;
+        tempList.add(existing.first);
       } else {
-        // Varsayılan boş saat oluştur
-        return WorkingHoursEntity(
-          id: '',
-          businessId: businessId,
-          staffId: widget.staffId,
-          dayOfWeek: dayOfWeek,
-          startTime: '09:00',
-          endTime: '18:00',
-          isClosed: dayOfWeek == 7, // Pazar varsayılan kapalı
+        tempList.add(
+          WorkingHoursEntity(
+            id: '',
+            businessId: businessId,
+            staffId: widget.staffId,
+            dayOfWeek: i,
+            startTime: '09:00',
+            endTime: '18:00',
+            isClosed: i == 7, // Default Pazar kapalı
+          ),
         );
       }
+    }
+    
+    // Future build sonrasında state'i güvenle set etmek için microtask
+    Future.microtask(() {
+      setState(() {
+        _currentHours = tempList;
+        _isInitialized = true;
+      });
     });
   }
 
-  Future<void> _pickTime(BuildContext context, int index, bool isStart) async {
-    final currentEntity = _editableHours![index];
-    final currentTimeString = isStart ? currentEntity.startTime : currentEntity.endTime;
-    
-    final parts = currentTimeString.split(':');
+  Future<void> _selectTime(BuildContext context, int index, bool isStartTime) async {
+    final currentStr = isStartTime ? _currentHours[index].startTime : _currentHours[index].endTime;
+    final parts = currentStr.split(':');
     final initialTime = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
 
     final picked = await showTimePicker(
@@ -66,16 +75,17 @@ class _WorkingHoursScreenState extends ConsumerState<WorkingHoursScreen> {
     );
 
     if (picked != null) {
-      final newTimeString = '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+      final formattedTime = '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
       setState(() {
-        _editableHours![index] = WorkingHoursEntity(
-          id: currentEntity.id,
-          businessId: currentEntity.businessId,
-          staffId: currentEntity.staffId,
-          dayOfWeek: currentEntity.dayOfWeek,
-          startTime: isStart ? newTimeString : currentEntity.startTime,
-          endTime: isStart ? currentEntity.endTime : newTimeString,
-          isClosed: currentEntity.isClosed,
+        final old = _currentHours[index];
+        _currentHours[index] = WorkingHoursEntity(
+          id: old.id,
+          businessId: old.businessId,
+          staffId: old.staffId,
+          dayOfWeek: old.dayOfWeek,
+          startTime: isStartTime ? formattedTime : old.startTime,
+          endTime: !isStartTime ? formattedTime : old.endTime,
+          isClosed: old.isClosed,
         );
       });
     }
@@ -83,25 +93,25 @@ class _WorkingHoursScreenState extends ConsumerState<WorkingHoursScreen> {
 
   void _toggleClosed(int index, bool value) {
     setState(() {
-      final current = _editableHours![index];
-      _editableHours![index] = WorkingHoursEntity(
-        id: current.id,
-        businessId: current.businessId,
-        staffId: current.staffId,
-        dayOfWeek: current.dayOfWeek,
-        startTime: current.startTime,
-        endTime: current.endTime,
+      final old = _currentHours[index];
+      _currentHours[index] = WorkingHoursEntity(
+        id: old.id,
+        businessId: old.businessId,
+        staffId: old.staffId,
+        dayOfWeek: old.dayOfWeek,
+        startTime: old.startTime,
+        endTime: old.endTime,
         isClosed: value,
       );
     });
   }
 
   Future<void> _save() async {
-    if (_editableHours == null) return;
+    if (_currentHours.isEmpty) return;
     await ref.read(workingHoursViewModelProvider.notifier).saveWorkingHours(
-          _editableHours!,
-          staffId: widget.staffId,
-        );
+      _currentHours,
+      staffId: widget.staffId,
+    );
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Çalışma saatleri kaydedildi.'), backgroundColor: AppColors.success),
@@ -111,114 +121,118 @@ class _WorkingHoursScreenState extends ConsumerState<WorkingHoursScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final title = widget.staffId == null 
+        ? 'İşletme Çalışma Saatleri' 
+        : '${widget.staffName ?? "Personel"} Çalışma Saatleri';
+
     final asyncHours = widget.staffId == null
         ? ref.watch(businessWorkingHoursProvider)
         : ref.watch(staffWorkingHoursProvider(widget.staffId!));
-        
-    final currentBusiness = ref.watch(currentBusinessProvider).valueOrNull;
+
+    final currentBusinessAsync = ref.watch(currentBusinessProvider);
     final viewModelState = ref.watch(workingHoursViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.staffId == null ? 'İşletme Çalışma Saatleri' : 'Personel Çalışma Saatleri'),
-      ),
-      body: currentBusiness == null
-          ? const Center(child: CircularProgressIndicator())
-          : asyncHours.when(
-              data: (data) {
-                _initializeHours(data, currentBusiness.id);
+      appBar: AppBar(title: Text(title)),
+      body: currentBusinessAsync.when(
+        data: (business) {
+          if (business == null) return const Center(child: Text('İşletme bulunamadı.'));
 
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.separated(
-                        padding: const EdgeInsets.all(AppDimensions.spacing16),
-                        itemCount: 7,
-                        separatorBuilder: (_, __) => const SizedBox(height: AppDimensions.spacing8),
-                        itemBuilder: (context, index) {
-                          final dayData = _editableHours![index];
-                          final isClosed = dayData.isClosed;
+          return asyncHours.when(
+            data: (hours) {
+              _initHours(hours, business.id);
 
-                          return Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(AppDimensions.spacing12),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 90,
-                                    child: Text(
-                                      _dayNames[index],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: isClosed ? AppColors.textSecondary : AppColors.textPrimary,
-                                        decoration: isClosed ? TextDecoration.lineThrough : null,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        if (!isClosed) ...[
-                                          InkWell(
-                                            onTap: () => _pickTime(context, index, true),
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(color: AppColors.border),
-                                                borderRadius: BorderRadius.circular(AppDimensions.radius8),
-                                              ),
-                                              child: Text(dayData.startTime),
-                                            ),
-                                          ),
-                                          const Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                            child: Text('-'),
-                                          ),
-                                          InkWell(
-                                            onTap: () => _pickTime(context, index, false),
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(color: AppColors.border),
-                                                borderRadius: BorderRadius.circular(AppDimensions.radius8),
-                                              ),
-                                              child: Text(dayData.endTime),
-                                            ),
-                                          ),
-                                        ] else ...[
-                                          const Text('Kapalı', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold)),
-                                        ],
-                                      ],
-                                    ),
-                                  ),
-                                  Switch(
-                                    value: !isClosed,
-                                    activeColor: AppColors.success,
-                                    onChanged: (val) => _toggleClosed(index, !val),
-                                  ),
-                                ],
+              if (!_isInitialized) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(AppDimensions.spacing16),
+                      itemCount: _currentHours.length,
+                      separatorBuilder: (_, __) => const Divider(),
+                      itemBuilder: (context, index) {
+                        final item = _currentHours[index];
+                        final dayName = _days[index];
+
+                        return Row(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: Text(
+                                dayName, 
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: item.isClosed ? AppColors.textSecondary : AppColors.textPrimary,
+                                  decoration: item.isClosed ? TextDecoration.lineThrough : null,
+                                ),
                               ),
                             ),
-                          );
-                        },
-                      ),
+                            Switch(
+                              value: !item.isClosed,
+                              activeColor: AppColors.primary,
+                              onChanged: (val) => _toggleClosed(index, !val),
+                            ),
+                            const Spacer(),
+                            if (!item.isClosed) ...[
+                              InkWell(
+                                onTap: () => _selectTime(context, index, true),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: AppColors.border),
+                                    borderRadius: BorderRadius.circular(AppDimensions.radius8),
+                                  ),
+                                  child: Text(item.startTime),
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text('-'),
+                              ),
+                              InkWell(
+                                onTap: () => _selectTime(context, index, false),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: AppColors.border),
+                                    borderRadius: BorderRadius.circular(AppDimensions.radius8),
+                                  ),
+                                  child: Text(item.endTime),
+                                ),
+                              ),
+                            ] else ...[
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text('Kapalı / İzinli', style: TextStyle(color: AppColors.error)),
+                              ),
+                            ]
+                          ],
+                        );
+                      },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(AppDimensions.spacing16),
-                      child: ElevatedButton(
-                        onPressed: viewModelState.isLoading ? null : _save,
-                        child: viewModelState.isLoading
-                            ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: AppColors.surface, strokeWidth: 2))
-                            : const Text('Kaydet'),
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(AppDimensions.spacing16),
+                    child: ElevatedButton(
+                      onPressed: viewModelState.isLoading ? null : _save,
+                      child: viewModelState.isLoading
+                          ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: AppColors.surface, strokeWidth: 2))
+                          : const Text('Kaydet'),
                     ),
-                  ],
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
-              error: (error, _) => Center(child: Text('Hata: $error')),
-            ),
+                  ),
+                ],
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, _) => Center(child: Text('Hata: $e')),
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('Hata: $e')),
+      ),
     );
   }
 }
