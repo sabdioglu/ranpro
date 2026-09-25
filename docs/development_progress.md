@@ -1,18 +1,15 @@
 # Development Progress
 
-## STAGE 0 - 6
-- [x] Mimari, Veritabanı Şeması, Güvenlik, Core, Auth, Multi-tenant, Business modelleri tamamlandı.
-
-## STAGE 7
-- [x] Business Profile UI (İşletme Bilgileri Ekranı) tamamlandı.
-
-## STAGE 8
-- [x] Hizmetler (Services) Entity, Repository, DataSource katmanları oluşturuldu.
-- [x] Hizmetler UI (services_screen.dart) tamamlandı.
-- [x] Hizmet Ekle/Düzenle Dialog (add_edit_service_dialog.dart) eklendi ve fiyat/kuruş hesabı çözüldü.
+## STAGE 0 - 8
+- [x] Temel mimari, Auth, Business, Services (Data + UI) tamamlandı.
 
 ## STAGE 9
-- [x] Hizmet Grupları (Service Groups) Firestore koleksiyonu şemaya eklendi.
-- [x] Hizmet Grupları Entity, Repository, DataSource katmanları oluşturuldu.
-- [x] Hizmet Grupları Riverpod Provider altyapısı bağlandı.
-- [ ] Hizmet Grupları UI (Ekle/Düzenle Ekranları) oluşturulacak.
+- [x] Hizmet Grupları (Service Groups) Firestore modeli ve Repository yapısı eklendi.
+- [x] Hizmet Grupları Riverpod Provider'ları bağlandı.
+- [x] Hizmet Grupları UI (service_groups_screen, add_edit_service_group_dialog, viewmodel) tamamlandı.
+
+## STAGE 10
+- [x] Personel (Staff) Firestore koleksiyonu şemaya eklendi.
+- [x] Personel Entity, Repository, DataSource katmanları Clean Architecture ile oluşturuldu.
+- [x] Personel Riverpod Provider altyapısı (staffListProvider) bağlandı.
+- [ ] Personel UI (Liste, Ekle/Düzenle Ekranları) eklenecek.
