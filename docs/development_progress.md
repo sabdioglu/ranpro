@@ -1,25 +1,23 @@
 # Development Progress
 
 ## STAGE 0
-- [x] Project Memory oluşturuldu.
-- [x] Database Schema temel dokümanı oluşturuldu.
-- [x] Security Rules temel stratejisi (Multi-tenant) belirlendi.
-- [ ] Architecture oluşturulacak.
+- [x] Project Memory, Architecture, Database Schema, Security Rules hazırlandı.
 
 ## STAGE 1 & 2
-- [x] Core Theme, Error, Logging, Splash ve go_router altyapısı kuruldu.
+- [x] Core (Theme, Error, Logger, Router) yapısı kuruldu.
 
 ## STAGE 3 & 4
-- [x] Firebase initialization yapısı kuruldu.
-- [x] Auth Domain, Data, UI ve Guard mekanizmaları tamamlandı.
+- [x] Firebase Init & Authentication tamamlandı.
 
-## STAGE 5
-- [x] Firestore 'users' koleksiyonu entegrasyonu sağlandı.
-- [x] Multi-tenant altyapısı kuruldu (businessId izolasyonu).
-- [x] Firebase Security Rules dokümantasyonu oluşturuldu.
+## STAGE 5 & 6
+- [x] Multi-tenant yapısı & Business (İşletme) Core Modelleri tamamlandı.
 
-## STAGE 6 & 7
-- [x] Business Entity, Repository ve RemoteDataSource oluşturuldu.
-- [x] Current Business Riverpod Provider eklendi.
-- [ ] Business Profile UI (İşletme Bilgileri Ekranı) eklenecek.
-- [ ] Hizmetler (Services) modeli ve altyapısı oluşturulacak.
+## STAGE 7
+- [x] Business Profile UI (İşletme Bilgileri Ekranı) tamamlandı.
+- [x] Business Profile ViewModel state yönetimi oluşturuldu.
+
+## STAGE 8
+- [x] Hizmetler (Services) Entity, Repository, ve DataSource katmanları oluşturuldu.
+- [x] Hizmetler için integer (kuruş) tabanlı para mimarisi entegre edildi.
+- [x] Services Riverpod Provider'ları eklendi.
+- [ ] Hizmetler (Services) UI (Ekle/Düzenle Ekranları) eklenecek.
