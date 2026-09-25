@@ -31,9 +31,22 @@
 - `groupId` (String, nullable)
 
 ### 4. serviceGroups
-İşletmenin hizmetlerini kategorize etmek için kullanılır (Örn: Lazer, Cilt Bakımı, Masaj).
 - `id` (String, Document ID)
 - `businessId` (String)
 - `name` (String)
 - `order` (Number/Integer: Sıralama için)
 - `isActive` (Boolean)
+
+### 5. staff
+İşletmede çalışan personellerin profil ve temel yapılandırma bilgileri.
+- `id` (String, Document ID)
+- `businessId` (String)
+- `firstName` (String)
+- `lastName` (String)
+- `photoUrl` (String, nullable)
+- `phone` (String, nullable)
+- `email` (String, nullable)
+- `position` (String, nullable) // Örn: Kıdemli Stilist, Terapist
+- `serviceIds` (Array of Strings) // Personelin verebildiği hizmetlerin ID'leri
+- `isActive` (Boolean)
+// Çalışma saatleri ve komisyon oranları ayrı özelliklerde veya alt koleksiyonlarda yönetilecektir.
