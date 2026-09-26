@@ -1,18 +1,15 @@
 # Development Progress
 
-## STAGE 0 - 11
-- [x] Temel mimari, Auth, Business, Services, Service Groups, Staff, Customers (Data + UI) tamamlandı.
+## STAGE 0 - 13
+- [x] Temel mimari, Auth, Business, Services, Service Groups, Staff, Customers, Working Hours, Blocked Times tamamlandı.
 
-## STAGE 12
-- [x] Çalışma Saatleri (Working Hours) Domain/Data altyapısı oluşturuldu.
-- [x] Çalışma Saatleri ViewModel (working_hours_view_model.dart) oluşturuldu.
-- [x] Çalışma Saatleri Ekranı (working_hours_screen.dart) oluşturuldu.
-- [x] 7 günlük form listesi, saat seçiciler (TimePicker) ve Switch (Açık/Kapalı) entegrasyonu sağlandı.
-- [x] `businessId` ve `staffId` mantığı ile tek ekranın iki amaçlı (işletme/personel) kullanımı tamamlandı.
+## STAGE 14
+- [x] Randevular (Appointments) Domain/Data katmanları oluşturuldu.
+- [x] Takvim Ekranı (calendar_screen) ve state yönetimi (calendar_view_model) eklendi.
+- [x] Randevu UI Kartı (appointment_card.dart) oluşturuldu, durum (status) renk kodları ayarlandı.
 
-## STAGE 13
-- [x] Bloklu Zamanlar (Blocked Times / İzin / Mola) Firestore koleksiyonu şemaya eklendi.
-- [x] Bloklu Zamanlar Entity, Repository, DataSource katmanları Clean Architecture ile oluşturuldu.
-- [x] Bloklu Zamanlar Riverpod Provider'ları eklendi.
-- [ ] Bloklu Zamanlar UI (Ekle/Düzenle) ve Takvim entegrasyonu (Stage 14) yapılacak.
- 
+## STAGE 15
+- [x] Randevu Oluşturma View Model (create_appointment_view_model) eklendi (StateNotifier ile adım yönetimi).
+- [x] Stepper tabanlı Randevu Oluşturma UI altyapısı (create_appointment_screen) kuruldu.
+- [x] Hizmet, Personel, Müşteri seçimi adımları mevcut Riverpod provider'ları ile entegre edildi.
+- [ ] Tarih/Saat Seçimi Adımı (Availability Engine gerektiriyor - Stage 16).
