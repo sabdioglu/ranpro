@@ -1,10 +1,10 @@
 name: Deploy Flutter Web to GitHub Pages
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -24,9 +24,10 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Enable web and get dependencies
+      - name: Create Web Platform and Get Dependencies
         run: |
           flutter config --enable-web
+          flutter create --platforms=web .
           flutter pub get
 
       - name: Build Web
@@ -47,4 +48,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        
