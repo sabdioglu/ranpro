@@ -1,1 +1,42 @@
+name: Auto Create Web Folder
 
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-push-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Generate Web Folder
+        run: |
+          flutter config --enable-web
+          flutter create --platforms=web .
+
+      - name: Commit and Push Web Folder
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add web/
+          if git diff --staged --quiet; then
+            echo "Web klasoru zaten mevcut veya degisiklik yok."
+          else
+            git commit -m "Auto add web platform folder"
+            git push
+          fi
+          
