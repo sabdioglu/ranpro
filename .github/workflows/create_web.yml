@@ -1,1 +1,33 @@
+name: Create Web Folder
 
+on:
+  workflow_dispatch:
+
+jobs:
+  create-web:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Generate Web
+        run: |
+          flutter create --platforms=web .
+
+      - name: Push Web Folder
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add web/
+          git commit -m "Add web platform folder"
+          git push
+          
