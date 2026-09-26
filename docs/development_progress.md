@@ -15,3 +15,4 @@
 - [x] Bloklu Zamanlar Entity, Repository, DataSource katmanları Clean Architecture ile oluşturuldu.
 - [x] Bloklu Zamanlar Riverpod Provider'ları eklendi.
 - [ ] Bloklu Zamanlar UI (Ekle/Düzenle) ve Takvim entegrasyonu (Stage 14) yapılacak.
+ 
